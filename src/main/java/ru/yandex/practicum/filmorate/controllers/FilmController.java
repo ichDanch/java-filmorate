@@ -8,12 +8,9 @@ import ru.yandex.practicum.filmorate.validators.film.FilmPredicate;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-
 
 @Slf4j
 @RestController
