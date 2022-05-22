@@ -7,6 +7,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -23,4 +24,6 @@ public class Film {
     private LocalDate releaseDate;
 
     private Duration duration;
+    private long likes;
+    private Set<User> likedUsers;
 }
