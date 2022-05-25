@@ -2,6 +2,8 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
+import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
@@ -32,10 +34,10 @@ public class FilmService {
 
     public void addLike(long filmId, long userId) {
         if (filmId <= 0) {
-            throw new ValidationException("Negative or zero film id when add like" + filmId);
+            throw new FilmNotFoundException("Negative or zero film id when add like" + filmId);
         }
         if (userId <= 0) {
-            throw new ValidationException("Negative or zero user id when add like" + userId);
+            throw new UserNotFoundException("Negative or zero user id when add like" + userId);
         }
         Film film = inMemoryFilmStorage.getFilm(filmId);
         film.setLikesIdUsers(userId);
@@ -43,15 +45,15 @@ public class FilmService {
 
     public void removeLike(long filmId, long userId) {
         if (filmId <= 0) {
-            throw new ValidationException("Negative or zero film id when remove like" + filmId);
+            throw new FilmNotFoundException("Negative or zero film id when remove like" + filmId);
         }
         if (userId <= 0) {
-            throw new ValidationException("Negative or zero user id when remove like " + userId);
+            throw new UserNotFoundException("Negative or zero user id when remove like " + userId);
         }
         Film film = inMemoryFilmStorage.getFilm(filmId);
         Set<Long> likes = film.getLikesIdUsers();
         if (!likes.contains(userId)) {
-            throw new ValidationException("This user [" + userId + "] does not like this film )");
+            throw new UserNotFoundException("This user [" + userId + "] does not like this film )");
         }
         likes.remove(userId);
     }
@@ -63,7 +65,7 @@ public class FilmService {
 
     public List<Film> topFilms(int count) {
         if (count <= 0) {
-            throw new ValidationException("Negative or zero count");
+            throw new FilmNotFoundException("Negative or zero count");
         }
         return inMemoryFilmStorage.getAllFilms()
                 .stream()

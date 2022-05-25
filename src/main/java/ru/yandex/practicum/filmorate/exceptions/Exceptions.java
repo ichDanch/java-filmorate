@@ -1,44 +1,37 @@
-/*
 package ru.yandex.practicum.filmorate.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.yandex.practicum.catsgram.exception.*;
+import ru.yandex.practicum.filmorate.model.Film;
 
 @RestControllerAdvice
-public class ExceptionHandler {
+public class Exceptions {
 
-    @ExceptionHandler({PostNotFoundException.class, UserNotFoundException.class})
+//400 — если ошибка валидации: ValidationException;
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleValidation(final ValidationException e) {
+        return new ErrorResponse(
+                e.getMessage()
+        );
+    }
+
+//404 — для всех ситуаций, если искомый объект не найден;
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleNotFound(final RuntimeException e) {
+    public ErrorResponse handleUserNotFound(final UserNotFoundException e) {
         return new ErrorResponse(
                 e.getMessage()
         );
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleConflict(final ValidationException e) {
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleFilmNotFound(final FilmNotFoundException e) {
         return new ErrorResponse(
                 e.getMessage()
-        );
-    }
-
-    @ExceptionHandler(InvalidEmailException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleBadRequestEmail(final RuntimeException e) {
-        return new ErrorResponse(
-                e.getMessage()
-        );
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleBadRequestParameter(final IncorrectParameterException e) {
-        return new ErrorResponse(
-                "Ошибка с полем " + e.getParameter()
         );
     }
 
@@ -50,6 +43,6 @@ public class ExceptionHandler {
         );
     }
 
+
 }
 
-*/

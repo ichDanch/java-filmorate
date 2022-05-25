@@ -50,12 +50,12 @@ public class FilmController {
         return film;
     }
 
-    @GetMapping
-    public Film getFilm(long id) {
+    @GetMapping("/film/{id}")
+    public Film getFilm(@PathVariable long id) {
         return filmStorage.getFilm(id);
     }
 
-    @GetMapping
+    @GetMapping("/films")
     public Collection<Film> getAllFilms() {
         return filmStorage.getAllFilms();
     }
@@ -79,6 +79,7 @@ public class FilmController {
     @PutMapping("/{id}/like/{userId}")
     public void addLike(@PathVariable(name = "id") long filmId,
                         @PathVariable long userId) {
+
         filmService.addLike(filmId, userId);
     }
 

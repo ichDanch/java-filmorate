@@ -2,12 +2,15 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.PathVariable;
+import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
+import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -18,22 +21,59 @@ public class UserService {
      */
 
     @Autowired
-    private UserStorage inMemoryUserStorage;
+    private UserStorage userStorage;
 
-    public User addFriend (long id) {
-        return null;
+    public void addFriend(long userId, long friendId) {
+        if (userId <= 0) {
+            throw new UserNotFoundException("Negative or zero user id when add friend, user id = " + userId);
+        }
+        if (friendId <= 0) {
+            throw new UserNotFoundException("Negative or zero friend id when add friend, friend id = " + friendId);
+        }
+        User user = userStorage.getUser(userId);
+        user.setFriends(friendId);
+        User friend = userStorage.getUser(friendId);
+        friend.setFriends(userId);
     }
 
-    public boolean removeFriend (long id) {
-        return false;
+    public void removeFriend(long userId, long friendId) {
+        if (userId <= 0) {
+            throw new UserNotFoundException("Negative or zero user id when remove friend, user id = " + userId);
+        }
+        if (friendId <= 0) {
+            throw new UserNotFoundException("Negative or zero friend id when remove friend, friend id = " + friendId);
+        }
+        User user = userStorage.getUser(userId);
+        User friend = userStorage.getUser(friendId);
+
+        if (!user.getFriends().contains(friendId) || !friend.getFriends().contains(userId)) {
+            throw new UserNotFoundException("Users does not friends");
+        }
+
+        user.getFriends().remove(friendId);
+        friend.getFriends().remove(userId);
     }
 
-    public List<User> commonFriends(){
-        return null;
+    public List<Long> getAllFriends(long id) {
+        if (id <= 0) {
+            throw new UserNotFoundException("Negative or zero id in get all friends: " + id);
+        }
+        User user = userStorage.getUser(id);
+        return new ArrayList<>(user.getFriends());
     }
 
-    public Collection<User> getAllUsers() {
-        return inMemoryUserStorage.getAllUsers();
+    public List<Long> getCommonFriends(long id, long otherId) {
+        if (id <= 0) {
+            throw new UserNotFoundException("Negative or zero id in get common friends: " + id);
+        }
+        if (otherId <= 0) {
+            throw new UserNotFoundException("Negative or zero other id in get common friends: " + id);
+        }
+        Set<Long> userFriends = userStorage.getUser(id).getFriends();
+        Set<Long> otherUserFriends = userStorage.getUser(otherId).getFriends();
+        List<Long> commonFriends = new ArrayList<>(userFriends);
+        var var = commonFriends.retainAll(otherUserFriends);
+        return commonFriends;
     }
 
 
