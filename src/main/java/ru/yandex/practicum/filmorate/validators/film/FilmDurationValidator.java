@@ -8,8 +8,8 @@ import ru.yandex.practicum.filmorate.model.Film;
 public class FilmDurationValidator implements FilmPredicate {
     @Override
     public boolean test(Film film) {
-        if (film.getDuration() != null) {
-            return film.getDuration().toMinutes() > 0;
+        if (film.getDuration() <= 0 ) {
+            return film.getDuration() > 0;
         }
         return false;
     }

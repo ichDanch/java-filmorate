@@ -55,7 +55,7 @@ public class FilmController {
         return filmStorage.getFilm(id);
     }
 
-    @GetMapping("/films")
+    @GetMapping
     public Collection<Film> getAllFilms() {
         return filmStorage.getAllFilms();
     }

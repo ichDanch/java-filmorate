@@ -23,7 +23,7 @@ public class Film {
 
     private LocalDate releaseDate;
 
-    private Duration duration;
+    private int duration;
     private Set<Long> likesIdUsers;
 
     public void setLikesIdUsers(long idUser) {
