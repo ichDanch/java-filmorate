@@ -24,6 +24,9 @@ public class Film {
     private LocalDate releaseDate;
 
     private Duration duration;
-    private long likes;
-    private Set<User> likedUsers;
+    private Set<Long> likesIdUsers;
+
+    public void setLikesIdUsers(long idUser) {
+        likesIdUsers.add(idUser);
+    }
 }
