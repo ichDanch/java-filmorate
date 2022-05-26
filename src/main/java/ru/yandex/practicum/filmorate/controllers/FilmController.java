@@ -50,7 +50,7 @@ public class FilmController {
         return film;
     }
 
-    @GetMapping("/film/{id}")
+    @GetMapping("/{id}")
     public Film getFilm(@PathVariable long id) {
         return filmStorage.getFilm(id);
     }

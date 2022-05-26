@@ -70,11 +70,10 @@ public class FilmService {
         return inMemoryFilmStorage.getAllFilms()
                 .stream()
                 .sorted((f0, f1) -> {
-                    return f0.getLikesIdUsers().size() - f1.getLikesIdUsers().size();
+                    return f1.getLikesIdUsers().size() - f0.getLikesIdUsers().size();
                 })
-                .skip(count)
+                .limit(count)
                 .collect(Collectors.toList());
-
     }
 
 }

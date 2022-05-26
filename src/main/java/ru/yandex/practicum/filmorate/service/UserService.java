@@ -31,8 +31,8 @@ public class UserService {
             throw new UserNotFoundException("Negative or zero friend id when add friend, friend id = " + friendId);
         }
         User user = userStorage.getUser(userId);
-        user.setFriends(friendId);
         User friend = userStorage.getUser(friendId);
+        user.setFriends(friendId);
         friend.setFriends(userId);
     }
 
@@ -54,15 +54,21 @@ public class UserService {
         friend.getFriends().remove(userId);
     }
 
-    public List<Long> getAllFriends(long id) {
+    public List<User> getAllFriends(long id) {
         if (id <= 0) {
             throw new UserNotFoundException("Negative or zero id in get all friends: " + id);
         }
         User user = userStorage.getUser(id);
-        return new ArrayList<>(user.getFriends());
+        Set<Long> friends = user.getFriends();
+        List<User> friendsList = new ArrayList<>();
+        for (Long friend : friends) {
+            User fr = userStorage.getUser(friend);
+            friendsList.add(fr);
+        }
+        return friendsList;
     }
 
-    public List<Long> getCommonFriends(long id, long otherId) {
+    public List<User> getCommonFriends(long id, long otherId) {
         if (id <= 0) {
             throw new UserNotFoundException("Negative or zero id in get common friends: " + id);
         }
@@ -71,9 +77,17 @@ public class UserService {
         }
         Set<Long> userFriends = userStorage.getUser(id).getFriends();
         Set<Long> otherUserFriends = userStorage.getUser(otherId).getFriends();
+        if (userFriends == null || otherUserFriends == null) {
+            return new ArrayList<>();
+        }
         List<Long> commonFriends = new ArrayList<>(userFriends);
         var var = commonFriends.retainAll(otherUserFriends);
-        return commonFriends;
+        List<User> getCommonFriends = new ArrayList<>();
+        for (Long friend : commonFriends) {
+            User user = userStorage.getUser(friend);
+            getCommonFriends.add(user);
+        }
+        return getCommonFriends;
     }
 
 
