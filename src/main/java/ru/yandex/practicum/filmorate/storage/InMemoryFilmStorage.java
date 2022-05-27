@@ -5,24 +5,23 @@ import ru.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.*;
 
 @Component
 public class InMemoryFilmStorage implements FilmStorage{
 
     HashMap<Long, Film> films = new HashMap<>();
     private static long FILM_COUNT;
+
     @Override
     public Film addFilm(Film film) {
         film.setId(++FILM_COUNT);
         films.put(film.getId(), film);
-        return null;
+        return film;
     }
 
     @Override
     public boolean removeFilm(long id) {
-        idValidation(id);
         films.remove(id);
         return true;
     }
@@ -34,22 +33,14 @@ public class InMemoryFilmStorage implements FilmStorage{
     }
 
     @Override
-    public Film getFilm(long id) {
-       idValidation(id);
-       return films.get(id);
+    public Optional<Film> getFilm(long id) {
+       return Optional.of(films.get(id));
     }
 
     @Override
-    public Collection<Film> getAllFilms() {
-        return films.values();
+    public List<Film> getAllFilms() {
+        return new ArrayList<>(films.values());
     }
 
-    public void idValidation(long id) {
-        if(id <= 0) {
-            throw new FilmNotFoundException("Negative or zero id " + id);
-        }
-        if (!films.containsKey(id)) {
-            throw new FilmNotFoundException("Does not contain a movie with this id " + id);
-        }
-    }
+
 }

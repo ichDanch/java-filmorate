@@ -5,10 +5,7 @@ import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class InMemoryUserStorage implements UserStorage {
@@ -24,7 +21,6 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public boolean removeUser(long id) {
-        idValidation(id);
         users.remove(id);
         return true;
     }
@@ -36,23 +32,14 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User getUser(long id) {
-        idValidation(id);
-        return users.get(id);
+    public Optional<User> getUser(long id) {
+        return Optional.of(users.get(id));
     }
 
     @Override
-    public Collection<User> getAllUsers() {
-        return users.values();
+    public List<User> getAllUsers() {
+        return new ArrayList<>(users.values());
     }
-
-    public void idValidation(long id) {
-        if (id <= 0) {
-            throw new UserNotFoundException("Negative or zero id " + id);
-        }
-        if (!users.containsKey(id)) {
-            throw new UserNotFoundException("Does not contain user with this id " + id);
-        }
-    }
-
 }
+
+

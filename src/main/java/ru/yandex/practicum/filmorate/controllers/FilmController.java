@@ -25,56 +25,38 @@ public class FilmController {
 
 
     private final FilmService filmService;
-    private final FilmStorage filmStorage;
 
     @Autowired
-    public FilmController(FilmService filmService, FilmStorage filmStorage) {
+    public FilmController(FilmService filmService) {
         this.filmService = filmService;
-        this.filmStorage = filmStorage;
     }
-
-    @Autowired
-    private List<FilmPredicate> filmValidators;
 
     @PostMapping
     public Film addFilm(@Valid @NotNull @RequestBody Film film) {
-        validation(film);
-        filmStorage.addFilm(film);
-        return film;
+        return filmService.addFilm(film);
     }
 
     @PutMapping
     public Film updateFilm(@Valid @NotNull @RequestBody Film film) {
-        validation(film);
-        filmStorage.updateFilm(film);
-        return film;
+       return filmService.updateFilm(film);
     }
 
     @GetMapping("/{id}")
     public Film getFilm(@PathVariable long id) {
-        return filmStorage.getFilm(id);
+        return filmService.getFilm(id);
     }
 
     @GetMapping
     public Collection<Film> getAllFilms() {
-        return filmStorage.getAllFilms();
+        return filmService.getAllFilms();
     }
 
     @DeleteMapping
     public boolean removeFilm(long id) {
-        return filmStorage.removeFilm(id);
+        return filmService.removeFilm(id);
     }
 
-    public void validation(Film film) {
-        final var filmErrorValidator = filmValidators
-                .stream()
-                .filter(validator -> !validator.test(film))
-                .findFirst();
 
-        filmErrorValidator.ifPresent(validator -> {
-            throw validator.getError();
-        });
-    }
 
     @PutMapping("/{id}/like/{userId}")
     public void addLike(@PathVariable(name = "id") long filmId,

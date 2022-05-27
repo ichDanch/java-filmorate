@@ -22,50 +22,35 @@ import java.util.*;
 public class UserController {
 
     private final UserService userService;
-    private final UserStorage userStorage;
 
     @Autowired
-    public UserController(UserService userService, UserStorage userStorage) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.userStorage = userStorage;
     }
 
     @PostMapping
     public User addUser(@Valid @NotNull @RequestBody User user) {
-        validation(user);
-        return userStorage.addUser(user);
+        return userService.addUser(user);
     }
 
     @PutMapping
     public User updateUser(@Valid @NotNull @RequestBody User user) {
-        validation(user);
-        userStorage.updateUser(user);
-        return user;
+        return userService.updateUser(user);
     }
 
     @DeleteMapping
     public boolean removeUser(long id) {
-        return userStorage.removeUser(id);
+        return userService.removeUser(id);
     }
 
     @GetMapping("/{id}")
     public User getUser(@PathVariable long id) {
-        return userStorage.getUser(id);
+        return userService.getUser(id);
     }
 
     @GetMapping
     public Collection<User> getAllUsers() {
-        return userStorage.getAllUsers();
-    }
-
-    public void validation(User user) {
-        if (user.getId() < 0) {
-            throw new UserNotFoundException("Negative or zero user id");
-        }
-        if (user.getName().isBlank() || user.getName().isEmpty()) {
-            user.setName(user.getLogin());
-            log.trace("User name equals user login");
-        }
+        return userService.getAllUsers();
     }
 
     @PutMapping("/{id}/friends/{friendId}")
