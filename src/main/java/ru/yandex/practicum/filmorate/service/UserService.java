@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
+import javax.validation.constraints.Positive;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -29,6 +30,7 @@ public class UserService {
 
     public User updateUser(User user) {
         validation(user);
+        getUser(user.getId());
         userStorage.updateUser(user);
         return user;
     }

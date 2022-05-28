@@ -33,6 +33,7 @@ public class FilmService {
 
     public Film updateFilm(Film film) {
         validation(film);
+        getFilm(film.getId());
         filmStorage.updateFilm(film);
         return film;
     }
@@ -68,9 +69,9 @@ public class FilmService {
     }
 
     public List<Film> topFilms(int count) {
-        if (count <= 0) {
+       /* if (count <= 0) {
             throw new FilmNotFoundException("Negative or zero count");
-        }
+        }*/
         return filmStorage.getAllFilms()
                 .stream()
                 .sorted((f0, f1) -> {
