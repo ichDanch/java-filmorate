@@ -3,9 +3,7 @@ package ru.yandex.practicum.filmorate.controllers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.yandex.practicum.filmorate.exceptions.ErrorResponse;
 import ru.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
@@ -13,14 +11,12 @@ import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 @RestControllerAdvice
 public class ExceptionsController {
 
-//400 — если ошибка валидации: ValidationException;
     @ExceptionHandler
     public ResponseEntity<?> handleValidation(final ValidationException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 
     }
 
-//404 — для всех ситуаций, если искомый объект не найден;
     @ExceptionHandler
     public ResponseEntity<?> handleUserNotFound(final UserNotFoundException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
