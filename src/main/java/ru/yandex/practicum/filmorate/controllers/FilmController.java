@@ -2,54 +2,75 @@ package ru.yandex.practicum.filmorate.controllers;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.validators.film.FilmPredicate;
+import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.HashMap;
+import javax.validation.constraints.Positive;
+import java.util.Collection;
 import java.util.List;
 
 @Slf4j
+@Validated
 @RestController
 @RequestMapping("/films")
 public class FilmController {
-    HashMap<Long, Film> films = new HashMap<>();
+
+
+    private final FilmService filmService;
 
     @Autowired
-    private List<FilmPredicate> filmValidators;
+    public FilmController(FilmService filmService) {
+        this.filmService = filmService;
+    }
 
     @PostMapping
     public Film addFilm(@Valid @NotNull @RequestBody Film film) {
-        validation(film);
-        log.info("Film added: " + film);
-        films.put(film.getId(), film);
-        return film;
+        return filmService.addFilm(film);
     }
 
     @PutMapping
     public Film updateFilm(@Valid @NotNull @RequestBody Film film) {
-        validation(film);
-        log.info("Film updated: " + film);
-        films.put(film.getId(), film);
-        return film;
+        return filmService.updateFilm(film);
+    }
+
+    @GetMapping("/{id}")
+    public Film getFilm(@PathVariable long id) {
+        return filmService.getFilm(id);
     }
 
     @GetMapping
-    public ArrayList<Film> getAllFilms() {
-        return new ArrayList<Film>(films.values());
+    public List<Film> getAllFilms() {
+        return filmService.getAllFilms();
     }
 
-    public void validation(Film film) {
-        final var filmErrorValidator = filmValidators
-                .stream()
-                .filter(validator -> !validator.test(film))
-                .findFirst();
-
-        filmErrorValidator.ifPresent(validator -> {
-            throw validator.getError();
-        });
+    @DeleteMapping
+    public boolean removeFilm(long id) {
+        return filmService.removeFilm(id);
     }
+
+
+    @PutMapping("/{id}/like/{userId}")
+    public void addLike(@PathVariable(name = "id") long filmId,
+                        @PathVariable long userId) {
+
+        filmService.addLike(filmId, userId);
+    }
+
+    @DeleteMapping("/{id}/like/{userId}")
+    public void removeLike(@PathVariable("id") long filmId,
+                           @PathVariable long userId) {
+        filmService.removeLike(filmId, userId);
+    }
+
+    @GetMapping("/popular")
+    public List<Film> topFilms(
+            @RequestParam(value = "count", defaultValue = "10", required = false) @Positive int count) {
+        return filmService.topFilms(count);
+    }
+
+
 }
