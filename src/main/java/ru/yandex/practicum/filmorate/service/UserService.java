@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -19,7 +20,7 @@ public class UserService {
     private final UserStorage userStorage;
 
     @Autowired
-    public UserService(UserStorage userStorage) {
+    public UserService(@Qualifier("UserDbStorage") UserStorage userStorage) {
         this.userStorage = userStorage;
     }
 
@@ -51,50 +52,36 @@ public class UserService {
     }
 
     public void addFriend(long userId, long friendId) {
-        User user = getUser(userId);
-        User friend = getUser(friendId);
-        user.setFriends(friendId);
-        friend.setFriends(userId);
+        getUser(userId);
+        getUser(friendId);
+        userStorage.addFriend(userId,friendId);
     }
 
     public void removeFriend(long userId, long friendId) {
-        User user = getUser(userId);
-        User friend = getUser(friendId);
-
-        if (!user.getFriends().contains(friendId) || !friend.getFriends().contains(userId)) {
-            throw new UserNotFoundException("Users are not friends");
-        }
-
-        user.getFriends().remove(friendId);
-        friend.getFriends().remove(userId);
+        getUser(userId);
+        getUser(friendId);
+        //проверка на друзей
+        userStorage.removeFriend(userId,friendId);
     }
 
     public List<User> getAllFriends(long id) {
-        return getUser(id).getFriends().stream()
-                .map(o -> {
-                    return getUser(o);
-                })
-                .collect(Collectors.toList());
+        return userStorage.getAllFriends(id);
     }
 
     public List<User> getCommonFriends(long id, long otherId) {
-        Set<Long> userFriends = getUser(id).getFriends();
-        Set<Long> otherUserFriends = getUser(otherId).getFriends();
+
+        List<User> userFriends = getAllFriends(id);
+        List<User> otherUserFriends = getAllFriends(otherId);
 
         if (userFriends == null || otherUserFriends == null) {
             return new ArrayList<>();
         }
 
-        List<Long> commonFriends = new ArrayList<>(userFriends);
+        List<User> commonFriends = new ArrayList<>(userFriends);
         commonFriends.retainAll(otherUserFriends);
 
-        return commonFriends.stream()
-                .map(o -> {
-                    return getUser(o);
-                })
-                .collect(Collectors.toList());
+        return commonFriends;
     }
-
 
     public void validation(User user) {
         if (user.getId() < 0) {
