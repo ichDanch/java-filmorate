@@ -21,14 +21,6 @@ public interface FilmStorage {
 
     List<Film> getAllFilms();
 
-    List<Genre> getAllGenre();
-
-    Optional<Genre> getGenre(int id);
-
-    List<Mpa> getAllMpa();
-
-    Optional<Mpa> getMpa(int id);
-
     void addLike(long filmId, long userId);
 
     void removeLike(long filmId, long userId);

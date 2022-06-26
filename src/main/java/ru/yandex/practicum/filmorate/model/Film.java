@@ -30,20 +30,10 @@ public class Film {
         this.releaseDate = releaseDate;
         this.duration = duration;
     }
-   /* public Film(long id, String name, String description, LocalDate releaseDate, int duration, Mpa mpa, TreeSet<Genre> genres) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.releaseDate = releaseDate;
-        this.duration = duration;
-        this.mpa=mpa;
-        this.genres=genres;
-    }*/
 
     public void setLikesIdUsers(long idUser) {
         likesIdUsers.add(idUser);
     }
-
 
     @Override
     public boolean equals(Object o) {

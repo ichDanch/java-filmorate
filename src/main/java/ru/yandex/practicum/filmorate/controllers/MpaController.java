@@ -6,27 +6,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.service.MpaService;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/mpa")
 public class MpaController {
+    private final MpaService mpaService;
 
-        private final FilmService filmService;
+    public MpaController(MpaService mpaService) {
+        this.mpaService = mpaService;
+    }
 
-        public MpaController(FilmService filmService) {
-            this.filmService = filmService;
-        }
+    @GetMapping
+    public List<Mpa> getAllMpa() {
+        return mpaService.getAllMpa();
+    }
 
-        @GetMapping
-        public List<Mpa> getAllMpa() {
-            return filmService.getAllMpa();
-        }
-
-        @GetMapping("/{id}")
-        public Mpa getMpa(@PathVariable int id) {
-            return filmService.getMpa(id);
-        }
+    @GetMapping("/{id}")
+    public Mpa getMpa(@PathVariable int id) {
+        return mpaService.getMpa(id);
+    }
 
 }

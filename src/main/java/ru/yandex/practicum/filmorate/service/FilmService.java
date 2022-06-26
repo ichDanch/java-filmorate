@@ -77,37 +77,7 @@ public class FilmService {
 
     public List<Film> topFilms(int count) {
       return filmStorage.topFilms(count);
-       /* return filmStorage.getAllFilms()
-                .stream()
-                .sorted((f0, f1) -> {
-                    return f1.getLikesIdUsers().size() - f0.getLikesIdUsers().size();
-                })
-                .limit(count)
-                .collect(Collectors.toList());*/
     }
-
-    public List<Genre> getAllGenre() {
-        return filmStorage.getAllGenre();
-    }
-
-    public Genre getGenre(int id) {
-        return filmStorage.getGenre(id)
-                .orElseThrow(() ->
-                        new GenreNotFoundException("Does not contain a genre with this id or invalid id " + id));
-    }
-
-    public List<Mpa> getAllMpa() {
-        return filmStorage.getAllMpa();
-    }
-
-    public Mpa getMpa(int id) {
-        return filmStorage.getMpa(id)
-                .orElseThrow(() ->
-                        new MpaNotFoundException("Does not contain a MPA with this id or invalid id " + id));
-    }
-
-
-
 
     public void validation(Film film) {
         final var filmErrorValidator = filmValidators
