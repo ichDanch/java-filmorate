@@ -1,9 +1,13 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
 
 public interface FilmStorage {
 
@@ -16,6 +20,14 @@ public interface FilmStorage {
     Optional<Film> getFilm(long id);
 
     List<Film> getAllFilms();
+
+    void addLike(long filmId, long userId);
+
+    void removeLike(long filmId, long userId);
+    List<Film> topFilms(int count);
+    void addGenresToFilm(long filmId, TreeSet<Genre> genres);
+    void removeGenresFromFilm (long filmId);
+    TreeSet<Genre> getFilmGenres(Long filmId);
 
 
 }

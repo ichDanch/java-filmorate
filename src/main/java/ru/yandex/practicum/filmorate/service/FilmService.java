@@ -1,11 +1,18 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
+import ru.yandex.practicum.filmorate.exceptions.GenreNotFoundException;
+import ru.yandex.practicum.filmorate.exceptions.MpaNotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 import ru.yandex.practicum.filmorate.validators.film.FilmPredicate;
 
 import java.util.List;
@@ -16,10 +23,13 @@ import java.util.stream.Collectors;
 public class FilmService {
 
     private final FilmStorage filmStorage;
+    private final UserStorage userStorage;
 
     @Autowired
-    public FilmService(FilmStorage filmStorage) {
+    public FilmService(@Qualifier("FilmDbStorage") FilmStorage filmStorage,
+                       @Qualifier("UserDbStorage") UserStorage userStorage) {
         this.filmStorage = filmStorage;
+        this.userStorage = userStorage;
     }
 
     @Autowired
@@ -54,31 +64,19 @@ public class FilmService {
     }
 
     public void addLike(long filmId, long userId) {
-        Film film = getFilm(filmId);
-        film.setLikesIdUsers(userId);
+        getFilm(filmId);
+        userStorage.getUser(userId);
+        filmStorage.addLike(filmId,userId);
     }
 
     public void removeLike(long filmId, long userId) {
-        // Как написать код для удаления элемента через stream ?
-        Film film = getFilm(filmId);
-        Set<Long> likes = film.getLikesIdUsers();
-        if (!likes.contains(userId)) {
-            throw new UserNotFoundException("This user [" + userId + "] does not liked this film )");
-        }
-        likes.remove(userId);
+        getFilm(filmId);
+        userStorage.getUser(userId);
+        filmStorage.removeLike(filmId,userId);
     }
 
     public List<Film> topFilms(int count) {
-       /* if (count <= 0) {
-            throw new FilmNotFoundException("Negative or zero count");
-        }*/
-        return filmStorage.getAllFilms()
-                .stream()
-                .sorted((f0, f1) -> {
-                    return f1.getLikesIdUsers().size() - f0.getLikesIdUsers().size();
-                })
-                .limit(count)
-                .collect(Collectors.toList());
+      return filmStorage.topFilms(count);
     }
 
     public void validation(Film film) {
