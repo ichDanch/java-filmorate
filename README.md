@@ -8,7 +8,7 @@
  - *GET /users/{id}/friends/common/{otherId} — список друзей, общих с другим пользователем.*
  - *PUT /films/{id}/like/{userId} — пользователь ставит лайк фильму.*
  - *DELETE /films/{id}/like/{userId} — пользователь удаляет лайк.*
- - *GET /films/popular?count={count} — возвращает список из первых count фильмов по количеству лайков. Если значение параметра count не задано, верните первые 10.*
+ - *GET /films/popular?count={count} — возвращаем список из первых count фильмов по количеству лайков. Если значение параметра count не задано, вернется первые 10.*
 
 ![](QuickDBD-Filmorate.png)
 
