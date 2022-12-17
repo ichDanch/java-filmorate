@@ -1,5 +1,5 @@
 # Filmorate. Кинопоиск для своих.
-Социальная сеть, которая поможет выбрать кино на основе того, какие фильмы вы и ваши друзья смотрите и какие оценки имставите.  
+Социальная сеть, которая поможет выбрать кино на основе того, какие фильмы вы и ваши друзья смотрите и какие оценки им ставите.  
 
 #### Api приложенния: 
  - *PUT /users/{id}/friends/{friendId} — добавление в друзья.*
@@ -12,6 +12,7 @@
 
 ![](QuickDBD-Filmorate.png)
 
+#### Примеры SQL запросов:
 1. Запрос фильма по id:
 
 ```sql
@@ -28,3 +29,20 @@ GROUP BY FILMS.FILM_ID
 ORDER BY count(LIKES.USER_ID) desc
 LIMIT ?;
 ```   
+3. Запрос жанра фильма по id фильма
+```sql
+SELECT GENRES.GENRE_ID, NAME
+FROM FILMS_GENRE
+JOIN GENRES ON FILMS_GENRE.GENRE_ID = GENRES.GENRE_ID
+WHERE FILMS_GENRE.FILM_ID=?;
+``` 
+4. Запрос всех друзей
+```sql
+SELECT FRIEND_ID, EMAIL, LOGIN, NAME, BIRTHDAY
+FROM FRIENDS
+JOIN USERS ON FRIENDS.FRIEND_ID = USERS.USER_ID
+WHERE FRIENDS.USER_ID=?;
+``` 
+
+
+
